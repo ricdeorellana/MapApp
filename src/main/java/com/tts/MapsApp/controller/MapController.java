@@ -34,5 +34,11 @@ public class MapController {
 		return "index.html";
 	}
 	
+	@PostMapping("/random")
+	public String getRandomLocation(Location location, Model model) {
+		mapService.addRandom(location);
+		model.addAttribute(location);
+		return "index.html";
+	}
 	
 }

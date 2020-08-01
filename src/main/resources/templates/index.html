@@ -29,6 +29,13 @@
 					</div>
 				</form>
 				<br />
+		<form th:action="@{/random}" th:object=${location} method="post"
+					autocomplete="off" class="form-inline">
+					<div class="form-group">
+						<button class="btn btn-secondary btn-sm btn-block" name="Random" value="Submit">Random</button>
+					</div>
+				</form> 
+				<br />
 			</div>
 		</div>
 	</div>
