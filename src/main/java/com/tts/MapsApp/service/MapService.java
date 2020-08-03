@@ -1,6 +1,5 @@
 package com.tts.MapsApp.service;
 
-
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,46 +12,57 @@ import com.tts.MapsApp.model.Location;
 @Service
 public class MapService {
 
-		@Value("${api_key}")
-		private String apiKey;
-	
-		Random rand = new Random();
-		
+	@Value("${api_key}")
+	private String apiKey;
+//This will generate random INT and DOUBLES
+	Random rand = new Random();
+//Our latitudes are +-85 because the latitude of the google map doesn't include Artic
+	private int latMin = -85;
+	private int latMax = 85;
+	private int lngMin = -180;
+	private int lngMax = 180;
 
-		
-		public String genRandString(Double dl) {
-			double x = dl;
-		
-			for (int i = 1; i<=2; i++) {
-				x = x/.1;
-			}
-			String str = String.valueOf(x);
-			
-			return str;
-			
-		}
+//Pass through random int, return coords String
+	public String genRandString(int dl) {
+		int test = rand.nextInt(2);
+		int a = dl;
+		//Test is a random between 0 and 1, which is positive and negative respectively
+		if (test == 0) {
+			a = a * 1;
+		} else { a = a * -1; }
 		
 		
-		public void addCoordinates(Location location) {
-			String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + 
-				    location.getCity() + "," + location.getState() + "&key=" + apiKey;
-			
-			RestTemplate restTemplate = new RestTemplate();
-			GeocodingResponse response = restTemplate.getForObject(url,  GeocodingResponse.class);
-			Location coordinates = response.getResults().get(0).getGeometry().getLocation();
-			
-			location.setLat(coordinates.getLat());
-			location.setLng(coordinates.getLng());
-		}
-		
-		public void addRandom(Location location) {
-			String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + 
-				    location.getCity() + "," + location.getState() + "&key=" + apiKey;
-			
-			RestTemplate restTemplate = new RestTemplate();
-			restTemplate.getForObject(url,  GeocodingResponse.class);
-			
-			location.setLat(genRandString(rand.nextDouble()));
-			location.setLng(genRandString(rand.nextDouble()));
-		}
+		double b = rand.nextDouble();
+		// Adds rand double to rand Int
+		double x = a + b;
+
+		String str = String.valueOf(x);
+
+		return str;
+	}
+
+	// This method looks for coordinates of a city + state
+	public void addCoordinates(Location location) {
+		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + location.getCity() + ","
+				+ location.getState() + "&key=" + apiKey;
+
+		RestTemplate restTemplate = new RestTemplate();
+		GeocodingResponse response = restTemplate.getForObject(url, GeocodingResponse.class);
+		Location coordinates = response.getResults().get(0).getGeometry().getLocation();
+
+		location.setLat(coordinates.getLat());
+		location.setLng(coordinates.getLng());
+	}
+
+	// This method looks for random coordinates
+	public void addRandom(Location location) {
+		String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + location.getCity() + ","
+				+ location.getState() + "&key=" + apiKey;
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getForObject(url, GeocodingResponse.class);
+
+		location.setLat(genRandString(rand.nextInt((latMax - latMin + 1) + latMin)));
+		location.setLng(genRandString(rand.nextInt((lngMax - lngMin + 1) + lngMin)));
+	}
 }

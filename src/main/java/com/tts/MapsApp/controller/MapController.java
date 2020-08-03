@@ -38,6 +38,7 @@ public class MapController {
 	public String getRandomLocation(Location location, Model model) {
 		mapService.addRandom(location);
 		model.addAttribute(location);
+		System.out.println(location);
 		return "index.html";
 	}
 	
